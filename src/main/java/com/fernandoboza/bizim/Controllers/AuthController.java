@@ -42,11 +42,12 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody Employee data) {
         try {
-            String username = data.getEmail();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, data.getPassword()));
-            String token = jwtTokenProvider.createToken(username, this.employeeRepo.findEmployeeByEmail(username).getRole());
+            String email = data.getEmail();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, data.getPassword()));
+            Employee e = this.employeeRepo.findEmployeeByEmail(email);
+            String token = jwtTokenProvider.createToken(email, e.getRole());
             Map<Object, Object> model = new HashMap<>();
-            model.put("username", username);
+            model.put("employee", e);
             model.put("token", token);
             return ok(model);
         } catch (AuthenticationException e) {
@@ -57,12 +58,14 @@ public class AuthController {
     @SuppressWarnings("rawtypes")
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody Employee employee) {
+        System.out.println(employee.getFirst_name());
         Employee employeeExist = employeeService.findEmployeeByEmail(employee.getEmail());
         if (employeeExist != null) {
-            throw new BadCredentialsException("User with username: " + employee.getEmail() + " already exists");
+            throw new BadCredentialsException("User with email: " + employee.getEmail() + " already exists");
         }
         employeeService.saveEmployee(employee);
         Map<Object, Object> model = new HashMap<>();
+        model.put("employee", employee);
         model.put("message", "User registered successfully");
         return ok(model);
     }

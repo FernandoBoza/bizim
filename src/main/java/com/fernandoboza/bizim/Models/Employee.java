@@ -3,12 +3,20 @@ package com.fernandoboza.bizim.Models;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.IndexDirection;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-public class Employee extends User {
+@Document
+public class Employee {
     @Id
     private String id;
-    private String username;
+    private String first_name;
+    private String last_name;
+    private String phone;
+    @Indexed(unique = true, direction = IndexDirection.DESCENDING, dropDups = true)
+    private String email;
     private String password;
     private String role;
     @DBRef
@@ -16,53 +24,53 @@ public class Employee extends User {
     @DBRef
     private List<Service> services;
 
-    public Employee(String username, String password, String role, List<Appointment> appointments, List<Service> services) {
-        this.name = name;
+    public Employee() { }
+
+    public Employee(String first_name, String last_name, String phone, String email, String password, String role, List<Appointment> appointments, List<Service> services) {
+        this.first_name = first_name;
+        this.last_name = last_name;
         this.phone = phone;
         this.email = email;
-        this.username = username;
         this.password = password;
         this.role = role;
         this.appointments = appointments;
         this.services = services;
     }
 
-    @Override
-    public String getName() {
-        return super.getName();
+    public String getId() {
+        return id;
     }
 
-    @Override
-    public void setName(String name) {
-        super.setName(name);
+    public String getFirst_name() {
+        return first_name;
     }
 
-    @Override
+    public void setFirst_name(String first_name) {
+        this.first_name = first_name;
+    }
+
+    public String getLast_name() {
+        return last_name;
+    }
+
+    public void setLast_name(String last_name) {
+        this.last_name = last_name;
+    }
+
     public String getPhone() {
-        return super.getPhone();
+        return phone;
     }
 
-    @Override
     public void setPhone(String phone) {
-        super.setPhone(phone);
+        this.phone = phone;
     }
 
-    @Override
     public String getEmail() {
-        return super.getEmail();
+        return email;
     }
 
-    @Override
     public void setEmail(String email) {
-        super.setEmail(email);
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+        this.email = email;
     }
 
     public String getPassword() {
